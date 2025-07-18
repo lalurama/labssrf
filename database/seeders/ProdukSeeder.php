@@ -21,6 +21,7 @@ class ProdukSeeder extends Seeder
                 'hargajual' => 1000000.00,
                 'hargabeli' => 800000.00,
                 'foto' => null,
+                'stock' => 50, // Assuming initial stock is set to 50
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -31,6 +32,7 @@ class ProdukSeeder extends Seeder
                 'hargajual' => 200000.00,
                 'hargabeli' => 150000.00,
                 'foto' => null,
+                'stock' => 30, // Assuming initial stock is set to 30
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -41,6 +43,7 @@ class ProdukSeeder extends Seeder
                 'hargajual' => 300000.00,
                 'hargabeli' => 250000.00,
                 'foto' => null,
+                'stock' => 20, // Assuming initial stock is set to 20
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

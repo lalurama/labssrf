@@ -111,6 +111,8 @@
                 <main>
  
                     @yield('content')
+                    @yield('scripts')
+
  
                 </main>
  

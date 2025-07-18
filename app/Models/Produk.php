@@ -14,8 +14,9 @@ class Produk extends Model
         'nama',
         'jenis',
         'deskripsi',
-        'harga_jual',
-        'harga_beli',
-        'foto'
+        'hargajual',
+        'hargabeli',
+        'foto',
+        'stock'
     ];
 }
