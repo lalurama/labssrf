@@ -12,7 +12,6 @@
                     <h5 class="card-title">{{ $item->nama }}</h5>
                     <p class="card-text">Harga: Rp {{ number_format($item->hargajual, 0, ',', '.') }}</p>
                     <a href="{{ route('produk.show', $item->id) }}" class="btn btn-primary mt-2">Lihat Detail</a>
-                    
                 </div>
             </div>
         </div>
