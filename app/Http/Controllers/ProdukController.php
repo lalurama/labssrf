@@ -15,7 +15,7 @@ class ProdukController extends Controller
     {
         //
         $produk = Produk::all(); // Fetch all products from the database
-        return view('produk.index', compact('produk')); // Assuming you have a view named 'produk.index'
+        return view('home.index', compact('produk')); // Assuming you have a view named 'produk.index'
     }
 
     /**

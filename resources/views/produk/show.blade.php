@@ -8,18 +8,37 @@
             <div class="card-body">
                 <h3 class="card-title">{{ $produk->nama }}</h3>
                 <p class="card-text">Harga: Rp {{ number_format($produk->hargabeli, 0, ',', '.') }}</p>
-                <p class="card-text">{{ $produk->stock }}</p>
+                {{-- <p class="card-text">{{ $produk->stock }}</p> --}}
 
                 {{-- Tombol cek stok --}}
-                {{-- <button id="cek-stok" class="btn btn-primary">Cek Stok</button> --}}
+                <button id="cek-stok" class="btn btn-primary">Cek Stok</button>
                 {{-- <a href="{{ route('produk.show', $item->id) }}" class="btn btn-primary mt-2">Cek stock</a> --}}
                 {{-- Tempat muncul stok --}}
                 {{-- <div id="stock-result-{{ $produk->id }}" class="mt-2 text-muted"></div> --}}
-                {{-- <p id="stok-info" class="mt-3 text-success"></p> --}}
+                <p id="stok-info" class="mt-3 text-success"></p>
             </div>
         </div>
     </div>
 @endsection
+@section('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('#cek-stok').on('click', function () {
+        $.ajax({
+            url: '{{ route("produk.show", $produk->id) }}',
+            method: 'GET',
+            success: function (data) {
+                $('#stok-info').text('Stok tersedia: ' + data.stock);
+            },
+            error: function () {
+                $('#stok-info').text('Gagal mengambil data stok.');
+            }
+        });
+    });
+</script>
+@endsection
+
+{{-- Jika ingin menggunakan AJAX untuk mengambil data stok --}}
 {{-- @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
