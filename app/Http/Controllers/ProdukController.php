@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class ProdukController extends Controller
 {
@@ -185,5 +188,111 @@ class ProdukController extends Controller
     {
         $id->delete();
         return redirect()->route('index.index')->with('success', 'Produk berhasil dihapus');
+    }
+
+    public function indexdata()
+    {
+        //
+        // $produk = Produk::all(); // Fetch all products from the database
+        return view('produk.showdata'); // Assuming you have a view named 'produk.index'
+    }
+
+    public function showImage(Request $request)
+    {
+        // Ambil path dari query string (?path=...)
+        $path = $request->query('path');
+
+        // Coba ambil file dari path tersebut
+        $filePath = base_path($path);
+
+        if (file_exists($filePath)) {
+            return response(file_get_contents($filePath))
+                ->header('Content-Type', mime_content_type($filePath));
+        } else {
+            return response("File not found: " . $filePath, 404);
+        }
+    }
+
+    public function cekStok(Request $request)
+    {
+        // User bisa input "url" lewat query param
+        $url = $request->query('url');
+
+        // Server akan melakukan request GET ke URL arbitrary
+        $response = Http::get($url);
+
+        // Balikin response langsung ke client
+        return $response->body();
+    }
+
+    // Request data api dari app2
+    //logic ssrf
+    public function showdataapi()
+    {
+        return view('produk.testapi');
+    }
+    // Fungsi ini yang akan dipanggil saat tombol Cek Stok diklik
+    public function checkStock(Request $request)
+    {
+        $client = new Client();
+
+        // Ambil URL lengkap dari input 'url' yang dikirim dari form
+        $fullUrl = $request->input('url');
+
+        try {
+            $response = $client->request('GET', $fullUrl);
+            $product = json_decode($response->getBody()->getContents());
+
+            return response()->json(['product' => $product]);
+        } catch (\GuzzleHttp\Exception\RequestException $e) {
+            $error = 'Gagal mengambil data dari API. Pesan Error: ' . $e->getMessage();
+            return response()->json(['error' => $error], 500);
+        }
+    }
+    //logic ssrf
+    public function fetchUrl(Request $request)
+    {
+        $client = new Client();
+
+        $targetUrl = $request->query('url');
+
+        // Pastikan URL tidak kosong sebelum diproses
+        if (empty($targetUrl)) {
+            return response()->json(['error' => 'URL tidak boleh kosong.'], 400);
+        }
+
+        try {
+            // Guzzle akan mengambil konten dari URL yang diberikan
+            $response = $client->request('GET', $targetUrl);
+            $content = $response->getBody()->getContents();
+
+            // Cek apakah responsnya berupa JSON atau HTML/lainnya
+            if (json_decode($content) !== null) {
+                // Jika isinya JSON, kirimkan sebagai objek
+                return response()->json(['content' => json_decode($content)]);
+            } else {
+                // Jika bukan JSON, kirimkan sebagai string
+                return response()->json(['content' => $content]);
+            }
+        } catch (RequestException $e) {
+            $error = 'Gagal mengambil konten. Pesan Error: ' . $e->getMessage();
+            return response()->json(['error' => $error], 500);
+        }
+    }
+    //endlogic ssrf
+    public function listProduk()
+    {
+        $response = Http::get('http://127.0.0.1:8001/api/products');
+        $produks = $response->json();
+
+        return view('home.show', compact('produks'));
+    }
+
+    public function detailProduk($id)
+    {
+        $response = Http::get("http://127.0.0.1:8001/api/products/{$id}");
+        $produk = $response->json();
+
+        return view('home.detail', compact('produk'));
     }
 }
