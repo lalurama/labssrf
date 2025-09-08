@@ -254,7 +254,7 @@ class ProdukController extends Controller
     {
         $client = new Client();
 
-        $targetUrl = $request->query('url');
+        $targetUrl = $request->input('url');
 
         // Pastikan URL tidak kosong sebelum diproses
         if (empty($targetUrl)) {
